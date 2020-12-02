@@ -23,6 +23,12 @@ function! s:goto_file_line(...)
   let line  = matches[2] ==# '' ? '0' : matches[2]
   let col   = matches[3] ==# '' ? '0' : matches[3]
 
+  if !filereadable(fname)
+    if filereadable("../" . fname)
+      let fname = "../" . fname
+    endif
+  endif
+
   if filereadable(fname)
     let bufnr = bufnr('%')
     exec 'keepalt edit ' . fnameescape(fname)
