@@ -9,6 +9,20 @@ augroup END
 
 function! s:goto_file_line(...)
   let file_line_col = a:0 > 0 ? a:1 : bufname('%')
+
+  if !filereadable(file_line_col)
+    if filereadable("../" . file_line_col)
+      let fname = "../" . file_line_col
+      let bufnr = bufnr('%')
+      exec 'keepalt edit ' . fnameescape(fname)
+      exec 'bwipeout ' bufnr
+
+      normal! zv
+      normal! zz
+      filetype detect
+    endif
+  endif
+
   if filereadable(file_line_col) || file_line_col ==# ''
     return file_line_col
   endif
